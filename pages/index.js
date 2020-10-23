@@ -6,7 +6,7 @@ import classNames from 'classnames';
 
 import { listFiles } from '../files';
 
-// Used below, these need to be registered
+// Used below, these need to be registered !!!!!!!
 import MarkdownEditor from '../MarkdownEditor';
 import PlaintextEditor from '../components/PlaintextEditor';
 
@@ -24,6 +24,7 @@ const TYPE_TO_ICON = {
   'application/json': IconJSONSVG
 };
 
+// date updated when modified
 function FilesTable({ files, activeFile, setActiveFile }) {
   return (
     <div className={css.files}>
@@ -89,6 +90,7 @@ function Previewer({ file }) {
     <div className={css.preview}>
       <div className={css.title}>{path.basename(file.name)}</div>
       <div className={css.content}>{value}</div>
+      {console.log(value)}
     </div>
   );
 }
@@ -97,10 +99,10 @@ Previewer.propTypes = {
   file: PropTypes.object
 };
 
-// Uncomment keys to register editors for media types
+// Uncomment keys to register editors for media types !!!!!!!
 const REGISTERED_EDITORS = {
   // "text/plain": PlaintextEditor,
-  // "text/markdown": MarkdownEditor,
+  "text/markdown": MarkdownEditor,
 };
 
 function PlaintextFilesChallenge() {
@@ -113,12 +115,19 @@ function PlaintextFilesChallenge() {
   }, []);
 
   const write = file => {
+
+    const [text, setText] = useState([])
+
     console.log('Writing soon... ', file.name);
 
-    // TODO: Write the file to the `files` array
+    // TODO: Write the file to the `files` array!!!!!!!
+
   };
 
+  // if 
   const Editor = activeFile ? REGISTERED_EDITORS[activeFile.type] : null;
+
+  // Utilize provide for Markdown to pass down context
 
   return (
     <div className={css.page}>
@@ -130,7 +139,7 @@ function PlaintextFilesChallenge() {
           <div className={css.tagline}>Rethink Engineering Challenge</div>
           <h1>Fun With Plaintext</h1>
           <div className={css.description}>
-            Let{"'"}s explore files in JavaScript. What could be more fun than
+            Let's explore files in JavaScript. What could be more fun than
             rendering and editing plaintext? Not much, as it turns out.
           </div>
         </header>
@@ -154,10 +163,13 @@ function PlaintextFilesChallenge() {
         </footer>
       </aside>
 
+      {/* window showing editor/ active file, need to pass value from Previewer*/}
       <main className={css.editorWindow}>
         {activeFile && (
           <>
+            {/* when Registered_Editors is uncommented write is available */}
             {Editor && <Editor file={activeFile} write={write} />}
+
             {!Editor && <Previewer file={activeFile} />}
           </>
         )}
