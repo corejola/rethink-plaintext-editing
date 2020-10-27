@@ -6,9 +6,13 @@ import classNames from 'classnames';
 import ReactMarkdown from 'react-markdown'
 import { listFiles } from '../files';
 
+
 // Used below, these need to be registered !!!!!!!
 import MarkdownEditor from '../components/MarkdownEditor';
 import PlaintextEditor from '../components/PlaintextEditor';
+import JSEditor from '../components/JsEditor';
+import JsonEditor from '../components/JsonEditor';
+import AddFile from '../components/addFile'
 
 import IconPlaintextSVG from '../public/icon-plaintext.svg';
 import IconMarkdownSVG from '../public/icon-markdown.svg';
@@ -68,7 +72,7 @@ function FilesTable({ files, activeFile, setActiveFile }) {
           ))}
         </tbody>
       </table>
-    </div>
+    </div >
   );
 }
 
@@ -77,7 +81,6 @@ FilesTable.propTypes = {
   activeFile: PropTypes.object,
   setActiveFile: PropTypes.func
 };
-
 
 function Previewer({ file }) {
 
@@ -121,9 +124,13 @@ Previewer.propTypes = {
 };
 
 // Uncomment keys to register editors for media types !!!!!!!
+// Handle .js & .json editors..
 const REGISTERED_EDITORS = {
   "text/plain": PlaintextEditor,
   "text/markdown": MarkdownEditor,
+  "text/javascript": JSEditor,
+  "application/json": JsonEditor,
+  "newfile": AddFile
 };
 
 
@@ -131,6 +138,7 @@ function PlaintextFilesChallenge() {
   const [files, setFiles] = useState([]);
   const [activeFile, setActiveFile] = useState(null);
   const [click, setClick] = useState(false)
+  const [newFile, setNewFile] = useState(false)
 
 
   useEffect(() => {
@@ -144,8 +152,6 @@ function PlaintextFilesChallenge() {
     console.log('Writing soon... ', file.name);
 
     // TODO: Write the file to the `files` array!!!!!!!
-    // extract the file.value, using similar code to previewer
-    // run through some text editor
     // set the state as the value from the text editor
     for (let i = 0; i < files.length; i++) {
       if (files[i].name === file.name) {
@@ -154,7 +160,7 @@ function PlaintextFilesChallenge() {
 
       }
     }
-
+    setClick(false)
     setActiveFile(file)
     console.log(`${file.name} has been updated`)
   };
@@ -166,6 +172,13 @@ function PlaintextFilesChallenge() {
     } else {
       setClick(true)
     }
+  }
+
+  const addNewFile = () => {
+    // toggle to a blank Editor
+    setActiveFile(null)
+    setNewFile(true)
+
   }
 
   const Editor = activeFile ? REGISTERED_EDITORS[activeFile.type] : null;
@@ -184,6 +197,8 @@ function PlaintextFilesChallenge() {
             rendering and editing plaintext? Not much, as it turns out.
           </div>
         </header>
+        {/* add a new file button */}
+        <button className={css.addFile} onClick={addNewFile}>Add New File</button>
 
         <FilesTable
           files={files}
@@ -211,21 +226,23 @@ function PlaintextFilesChallenge() {
 
         {activeFile && (
           <>
-            <button className={css.toggleEditor} onClick={toggleEditor}>Editor</button>
+            <button className={css.toggleEditor} onClick={toggleEditor}>Toggle Editor</button>
             <div className={click ? css.hide : css.show}>
               <Previewer file={activeFile} />
             </div>
             <div className={click ? css.show : css.hide}>
               {Editor && <Editor file={activeFile} write={write} />}
             </div>
-            {/* show preview by default */}
-            {/* {!Editor && <Previewer file={activeFile} />} */}
           </>
         )}
 
         {!activeFile && (
           <div className={css.empty}>Select a file to view or edit</div>
         )}
+
+        {/* Render a blank form to create a new file */}
+        {newFile && (<AddFile write={write} />)}
+
       </main>
     </div>
   );

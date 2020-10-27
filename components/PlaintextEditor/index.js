@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment'
-
 import css from './style.css';
+import ReactHtmlParser from 'react-html-parser';
 
 function PlaintextEditor({ file, write }) {
 
   const [editFileDate, seteditFileDate] = useState(moment(file.lastModified).format('MMMM Do YYYY'))
   const [value, setValue] = useState('')
   const [newValue, setNewValue] = useState(value)
+
 
   useEffect(() => {
     (async () => {
@@ -18,8 +19,9 @@ function PlaintextEditor({ file, write }) {
 
   const handleChange = (event) => {
     // set state of value based on changes from event
-    setNewValue(event.target.value)
-
+    let data = event.target.value
+    setNewValue(data)
+    console.log(data)
   }
 
   const onSave = () => {
@@ -34,15 +36,21 @@ function PlaintextEditor({ file, write }) {
       }
     )
     // pass updated file to write function in parent
-    write(updatedFile)
+    if (newValue !== value) {
+      // pass updated file to write function in parent
+      write(updatedFile)
+    }      // do nothing
+
 
   }
   return (
     <div className={css.editor}>
-      <h3>Text Editor</h3>
+      <h3 className={css.title}>{file.name}</h3>
       <i>text/plain</i>
       <p>Last Modified {editFileDate}</p>
-      <textarea value={!newValue ? value : newValue} onChange={e => handleChange(e)}></textarea>
+
+      <textarea className={css.textArea} value={ReactHtmlParser(!newValue ? value : newValue)} onChange={e => handleChange(e)}></textarea>
+
       <button onClick={onSave}>Save Plain Text</button>
     </div>
   );

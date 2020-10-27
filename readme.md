@@ -15,21 +15,18 @@ Once complete, please email us a link to your forked repo with clean, tested cod
 
 --- 
 ## Scope 
-1. Markdown Editor & Previewer
-    - use ReactMardown to view Markdown format
-    - button to toggle editor boolean?
-    - give access to the write function in the editor component
-    - text area to take input
-    - [text, setText] = useState('')
-2. Text Editor & Previewer
-    - button to toggle editor boolean
-    - give access to the write function in the editor component
-    - text area to take input
-    - [text, setText] = useState('')
-3. Code & JSON Previewer & editor
-4. 
+1. Interface to allow you to modify and view the updated file type.
+2. Button to toggle between view & modify
+3. button to add new file type, dropdown list for type
+  - "text/plain"
+  - "text/markdown"
+  - "text/javascript"
+  - "application/json"
+4. Text editor to modify file type, save button uses existing write function to update state using hooks.
 
 ### Assumptions & Limitations:
-1. Simple update to add function text & markdown editor
-2. Save changes
+1. Scoped application to a simple view, update and add function
+2. Save changes in state only, no DB or local storage in solution
 3. Limitation - not very familiar with react functional components & hooks, most react experience with class components
+4. User Interface limited to CSS skills
+5. Timing to research new technologies and complete the scope of the application.

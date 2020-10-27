@@ -8,7 +8,7 @@ import css from './style.css';
 // import the prop of the md file into the source of the ReactMarkdown
 function MarkdownEditor({ file, write }) {
 
-  const [editFileDate, seteditFileDate] = useState(moment(file.lastModified).format('MMMM Do YYYY'))
+  const [editFileDate, seteditFileDate] = useState(moment(file.lastModified).format('dddd, MMMM DD YYYY'))
   const [value, setValue] = useState('')
   const [newValue, setNewValue] = useState(value)
 
@@ -26,28 +26,34 @@ function MarkdownEditor({ file, write }) {
   }
 
   const onSave = () => {
-    seteditFileDate(moment().format('MMMM Do YYYY'))
+    let today = moment().format('dddd, MMMM DD YYYY')
+    seteditFileDate(today)
+    console.log(today)
     // use the write function...
     const updatedFile = new File(
       [newValue],
       file.name,
       {
         type: 'text/markdown',
-        lastModified: new Date(editFileDate)
+        lastModified: new Date(today)
       }
     )
-    // pass updated file to write function in parent
-    write(updatedFile)
 
+    if (newValue !== value) {
+      // pass updated file to write function in parent
+      write(updatedFile)
+    } // else do nothing..
   }
 
 
   return (
     <div className={css.editor}>
-      <h3>Markdown Text Editor</h3>
+      <h3 className={css.title}>Markdown Text Editor</h3>
       <p>Last Modified {editFileDate}</p>
       {/* pass file into ReactMarkdown */}
-      <textarea value={!newValue ? value : newValue} onChange={e => handleChange(e)}></textarea>
+
+      <textarea className={css.textArea} value={!newValue ? value : newValue} onChange={e => handleChange(e)}></textarea>
+
       <button onClick={onSave}>Save Markdown Text</button>
 
     </div>
