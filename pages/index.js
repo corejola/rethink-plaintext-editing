@@ -149,20 +149,28 @@ function PlaintextFilesChallenge() {
 
 
   const write = (file) => {
+    //  check if file.name exists in files
+
     console.log('Writing soon... ', file.name);
+    const found = files.filter(file => name === file.name);
+    if (!found) {
+      setFiles(files.push(file))
+      console.log(files)
+    } else {
+      for (let i = 0; i < files.length; i++) {
+        if (files[i].name === file.name) {
+          files.splice(i, 1, file)
+          setFiles(files)
+        }
+      }
+
+      setClick(false)
+      setActiveFile(file)
+      console.log(`${file.name} has been updated`)
+    }
 
     // TODO: Write the file to the `files` array!!!!!!!
     // set the state as the value from the text editor
-    for (let i = 0; i < files.length; i++) {
-      if (files[i].name === file.name) {
-        files.splice(i, 1, file)
-        setFiles(files)
-
-      }
-    }
-    setClick(false)
-    setActiveFile(file)
-    console.log(`${file.name} has been updated`)
   };
 
   // Toggles the editor button to change the css class in order to display the Previewer or Editor
@@ -241,6 +249,7 @@ function PlaintextFilesChallenge() {
         )}
 
         {/* Render a blank form to create a new file */}
+        {/* need cancel function */}
         {newFile && (<AddFile write={write} />)}
 
       </main>
