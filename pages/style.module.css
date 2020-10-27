@@ -168,6 +168,12 @@ body {
   color: var(--color-text-dark-mute);
 }
 
+.toggleEditor{
+  position:relative;
+  top:0;
+  padding: 5px;
+}
+
 .preview {
   width: 640px;
   background-color: var(--color-white);
@@ -194,4 +200,12 @@ body {
   font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier,
     monospace;
   padding: 20px;
+}
+
+.show {
+  display:inline-flex
+} 
+
+.hide{
+  display:none
 }

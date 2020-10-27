@@ -53,6 +53,21 @@ The *quick* brown fox, jumped **over** the lazy [dog](https://en.wikipedia.org/w
     }
   );
 
+  const testMd = new File(
+    [
+      `## Testing
+      
+# Markdown
+      
+File`
+    ],
+    '/testMd.md',
+    {
+      type: 'text/markdown',
+      lastModified: new Date('2018-09-14T09:32:17')
+    }
+  );
+
   const javascript = new File(
     [
       `import { useState, useRef, useEffect } from 'react';
@@ -90,5 +105,5 @@ export default initialValue => {
     }
   );
 
-  return [guide, plain, water, fancy, javascript, json];
+  return [guide, plain, water, fancy, javascript, json, testMd];
 }

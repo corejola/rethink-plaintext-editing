@@ -4,11 +4,14 @@ import moment from 'moment'
 
 import css from './style.css';
 
-function PlaintextEditor({ file, write }) {
+
+// import the prop of the md file into the source of the ReactMarkdown
+function MarkdownEditor({ file, write }) {
 
   const [editFileDate, seteditFileDate] = useState(moment(file.lastModified).format('MMMM Do YYYY'))
   const [value, setValue] = useState('')
   const [newValue, setNewValue] = useState(value)
+
 
   useEffect(() => {
     (async () => {
@@ -37,20 +40,24 @@ function PlaintextEditor({ file, write }) {
     write(updatedFile)
 
   }
+
+
   return (
     <div className={css.editor}>
-      <h3>Text Editor</h3>
-      <i>text/plain</i>
+      <h3>Markdown Text Editor</h3>
       <p>Last Modified {editFileDate}</p>
+      {/* pass file into ReactMarkdown */}
       <textarea value={!newValue ? value : newValue} onChange={e => handleChange(e)}></textarea>
-      <button onClick={onSave}>Save Plain Text</button>
+      <button onClick={onSave}>Save Markdown Text</button>
+
     </div>
   );
 }
 
-PlaintextEditor.propTypes = {
+// checking/validating prop types
+MarkdownEditor.propTypes = {
   file: PropTypes.object,
   write: PropTypes.func
 };
 
-export default PlaintextEditor;
+export default MarkdownEditor;

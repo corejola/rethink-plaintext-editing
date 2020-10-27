@@ -3,11 +3,11 @@ import Head from 'next/head';
 import PropTypes from 'prop-types';
 import path from 'path';
 import classNames from 'classnames';
-
+import ReactMarkdown from 'react-markdown'
 import { listFiles } from '../files';
 
 // Used below, these need to be registered !!!!!!!
-import MarkdownEditor from '../MarkdownEditor';
+import MarkdownEditor from '../components/MarkdownEditor';
 import PlaintextEditor from '../components/PlaintextEditor';
 
 import IconPlaintextSVG from '../public/icon-plaintext.svg';
@@ -63,6 +63,7 @@ function FilesTable({ files, activeFile, setActiveFile }) {
                   day: 'numeric'
                 })}
               </td>
+
             </tr>
           ))}
         </tbody>
@@ -77,20 +78,40 @@ FilesTable.propTypes = {
   setActiveFile: PropTypes.func
 };
 
+
 function Previewer({ file }) {
+
   const [value, setValue] = useState('');
 
   useEffect(() => {
     (async () => {
       setValue(await file.text());
     })();
-  }, [file]);
+  }, [file, value]);
 
+  // Render for .md
+  if (file.type === 'text/markdown') {
+    return (
+      <div className={css.preview}>
+        <div className={css.title}>{path.basename(file.name)}</div>
+        <ReactMarkdown className={css.content} source={value} />
+      </div>
+    )
+  }
+  // Render for .txt
+  if (file.type === 'text/plain') {
+    return (
+      <div className={css.preview}>
+        <div className={css.title}>{path.basename(file.name)}</div>
+        <div className={css.content}>{value}</div>
+      </div>
+    );
+  }
+  // for all other file types
   return (
     <div className={css.preview}>
       <div className={css.title}>{path.basename(file.name)}</div>
       <div className={css.content}>{value}</div>
-      {console.log(value)}
     </div>
   );
 }
@@ -101,33 +122,53 @@ Previewer.propTypes = {
 
 // Uncomment keys to register editors for media types !!!!!!!
 const REGISTERED_EDITORS = {
-  // "text/plain": PlaintextEditor,
+  "text/plain": PlaintextEditor,
   "text/markdown": MarkdownEditor,
 };
+
 
 function PlaintextFilesChallenge() {
   const [files, setFiles] = useState([]);
   const [activeFile, setActiveFile] = useState(null);
+  const [click, setClick] = useState(false)
+
 
   useEffect(() => {
     const files = listFiles();
     setFiles(files);
   }, []);
 
-  const write = file => {
 
-    const [text, setText] = useState([])
 
+  const write = (file) => {
     console.log('Writing soon... ', file.name);
 
     // TODO: Write the file to the `files` array!!!!!!!
+    // extract the file.value, using similar code to previewer
+    // run through some text editor
+    // set the state as the value from the text editor
+    for (let i = 0; i < files.length; i++) {
+      if (files[i].name === file.name) {
+        files.splice(i, 1, file)
+        setFiles(files)
 
+      }
+    }
+
+    setActiveFile(file)
+    console.log(`${file.name} has been updated`)
   };
 
-  // if 
-  const Editor = activeFile ? REGISTERED_EDITORS[activeFile.type] : null;
+  // Toggles the editor button to change the css class in order to display the Previewer or Editor
+  const toggleEditor = () => {
+    if (click) {
+      setClick(false);
+    } else {
+      setClick(true)
+    }
+  }
 
-  // Utilize provide for Markdown to pass down context
+  const Editor = activeFile ? REGISTERED_EDITORS[activeFile.type] : null;
 
   return (
     <div className={css.page}>
@@ -165,12 +206,20 @@ function PlaintextFilesChallenge() {
 
       {/* window showing editor/ active file, need to pass value from Previewer*/}
       <main className={css.editorWindow}>
+
+        {/* ADD A TOGGLE BUTTON HERE TO TOGGLE BETWEEN EDITOR & PREVIEWER COMPONENTS */}
+
         {activeFile && (
           <>
-            {/* when Registered_Editors is uncommented write is available */}
-            {Editor && <Editor file={activeFile} write={write} />}
-
-            {!Editor && <Previewer file={activeFile} />}
+            <button className={css.toggleEditor} onClick={toggleEditor}>Editor</button>
+            <div className={click ? css.hide : css.show}>
+              <Previewer file={activeFile} />
+            </div>
+            <div className={click ? css.show : css.hide}>
+              {Editor && <Editor file={activeFile} write={write} />}
+            </div>
+            {/* show preview by default */}
+            {/* {!Editor && <Previewer file={activeFile} />} */}
           </>
         )}
 
