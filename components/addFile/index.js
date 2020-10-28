@@ -4,11 +4,11 @@ import moment from 'moment'
 
 import css from './style.css';
 
-const fileExt = ['.txt', '.md', '.js', 'json']
+const fileExt = ['.txt', '.md', '.js', '.json']
 const fileTypes = ["text/plain", "text/markdown", "text/javascript", "application/json"]
 
 // import the prop of the md file into the source of the ReactMarkdown
-function AddFile(write) {
+function AddFile({ write }) {
 
     const [dateCreated, setDateCreated] = useState(moment().format('dddd, MMMM DD YYYY'))
     const [value, setValue] = useState('')
@@ -20,14 +20,13 @@ function AddFile(write) {
     const handleFileName = (event) => {
         let name = event.target.value
         setName(name)
-        console.log(name)
     }
 
 
     const handleFileType = (event) => {
         let fileType = event.target.value
         setType(fileType)
-        console.log(fileType)
+
         // only works whens fileExt & fileTypes are paired in order...
         for (let i = 0; i < fileTypes.length; i++) {
             if (fileType === fileTypes[i]) {
@@ -41,18 +40,18 @@ function AddFile(write) {
         // set state of value based on changes from event
         // useEffect before passing through write
         setValue(event.target.value)
-        // handle event and pass through new file
+
     }
 
     const onSave = () => {
-        let today = moment().format('dddd, MMMM DD YYYY')
+        let today = moment()
 
         const newFile = new File(
             [value],
             fileName,
             {
                 type: type,
-                lastModified: today
+                lastModified: setDateCreated(today)
             }
         )
 
@@ -76,9 +75,10 @@ function AddFile(write) {
                 File Name:
                 <input type="text" name="fileName" onChange={e => handleFileName(e)} />
             </label>
-            <label for="fileType">File Type</label>
+            {/* <label for="fileType">File Type</label> */}
             <select id="fileType" onChange={e => handleFileType(e)}>
-                <option value="text/plain" selected>.txt</option>
+                <option value="text/plain" selected>Select File Type</option>
+                <option value="text/plain" >.txt</option>
                 <option value="text/markdown">.md</option>
                 <option value="text/javascript">.js</option>
                 <option value="application/json" >.json</option>
