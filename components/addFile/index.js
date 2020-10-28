@@ -40,7 +40,8 @@ function AddFile({ write }) {
     const handleContent = (event) => {
         // set state of value based on changes from event
         // useEffect before passing through write
-        setValue(event.target.value)
+        let content = event.target.value
+        setValue(content)
     }
 
     const onSave = () => {
@@ -70,7 +71,7 @@ function AddFile({ write }) {
 
             <label>
                 File Name:
-                <input type="text" name="fileName" onChange={e => handleFileName(e)} />
+                <input type="text" name="fileName" value={name} onChange={e => handleFileName(e)} />
             </label>
             <label >File Type</label>
             <select id="fileType" onChange={e => handleFileType(e)}>
