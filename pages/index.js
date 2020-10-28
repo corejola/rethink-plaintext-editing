@@ -29,7 +29,7 @@ const TYPE_TO_ICON = {
 };
 
 // date updated when modified
-function FilesTable({ activeFile, setActiveFile, files }) {
+function FilesTable({ activeFile, setActiveFile, allFiles }) {
   return (
     <div className={css.files}>
       <table>
@@ -40,7 +40,7 @@ function FilesTable({ activeFile, setActiveFile, files }) {
           </tr>
         </thead>
         <tbody>
-          {files.map(file => (
+          {allFiles.map(file => (
             < tr
               key={file.name}
               className={
@@ -131,23 +131,30 @@ function PlaintextFilesChallenge() {
   const [activeFile, setActiveFile] = useState(null);
   const [click, setClick] = useState(false)
   const [newFile, setNewFile] = useState(false)
+  const [allFiles, setAllFiles] = useState([])
 
+  // LIMITATION: Sets Initial files array state & continually renders this, cannot add to this state, as useEffect will continue to call the listFiles function
+  useEffect(() => {
+    let files = listFiles()
+    setFiles(files)
+    setAllFiles(files)
+  }, []);
 
   useEffect(() => {
-    const files = listFiles()
-    setFiles(files)
-  }, [files]);
+    console.log(allFiles)
+  }, [allFiles])
+
 
   const write = (file) => {
     //  check if file.name exists in files
     console.log('Writing soon... ', file.name);
 
     // need to check to see if this file exits in the files array
-    const found = false
-    // if it does not exist, push new file to the files array.
-    if (!found) {
-
-      setFiles(files.push(file))
+    const found = files.filter((item) => item.name == file.name)
+    // if it does not exist, push new file to the files array
+    if (found.length === 0) {
+      console.log("create new file")
+      setAllFiles(allFiles => [...allFiles, file]);
 
     } else {
       for (let i = 0; i < files.length; i++) {
@@ -156,12 +163,10 @@ function PlaintextFilesChallenge() {
           setFiles(files)
         }
       }
-      console.log(files)
       setClick(false)
       console.log(`${file.name} has been updated`)
     }
     // TODO: Write the file to the `files` array!!!!!!!
-    setAddedFile()
     setNewFile(false)
   };
 
@@ -204,7 +209,7 @@ function PlaintextFilesChallenge() {
         <button className={css.addFile} onClick={addNewFile}>Add New File</button>
 
         <FilesTable
-          files={files}
+          allFiles={allFiles}
           activeFile={activeFile}
           setActiveFile={setActiveFile}
         />

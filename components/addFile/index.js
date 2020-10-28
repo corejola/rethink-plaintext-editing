@@ -26,21 +26,21 @@ function AddFile({ write }) {
     const handleFileType = (event) => {
         let fileType = event.target.value
         setType(fileType)
-
-        // only works whens fileExt & fileTypes are paired in order...
+        let fileName = ''
+        // ASSUMPTION: only works whens fileExt & fileTypes are paired in order...
         for (let i = 0; i < fileTypes.length; i++) {
             if (fileType === fileTypes[i]) {
-                console.log(`/${name}${fileExt[i]}`)
-                setFileName(`/${name}${fileExt[i]}`)
+                fileName = `/${name}${fileExt[i]}`
             }
         }
+        console.log(fileName)
+        setFileName(fileName)
     }
 
     const handleContent = (event) => {
         // set state of value based on changes from event
         // useEffect before passing through write
         setValue(event.target.value)
-
     }
 
     const onSave = () => {
@@ -55,8 +55,6 @@ function AddFile({ write }) {
             }
         )
 
-        console.log(newFile)
-
         if (value) {
             // pass updated file to write function in parent
             // useEffect before passing through write!!!!!
@@ -70,15 +68,13 @@ function AddFile({ write }) {
             <h3 className={css.title}>Create New File</h3>
             <p>Date: {dateCreated}</p>
 
-
             <label>
                 File Name:
                 <input type="text" name="fileName" onChange={e => handleFileName(e)} />
             </label>
-            {/* <label for="fileType">File Type</label> */}
+            <label >File Type</label>
             <select id="fileType" onChange={e => handleFileType(e)}>
-                <option value="text/plain" selected>Select File Type</option>
-                <option value="text/plain" >.txt</option>
+                <option defaultValue="text/plain" >.txt</option>
                 <option value="text/markdown">.md</option>
                 <option value="text/javascript">.js</option>
                 <option value="application/json" >.json</option>
